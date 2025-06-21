@@ -12,29 +12,24 @@ import asyncio
 import uvicorn
 import keybords as kb
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO)
 
-# Инициализация бота и диспетчера
 API_TOKEN = '7691943629:AAGE6UxFcZucZc0xWbwpQMVwNzpQyeG-i2I'
 LAVA_API_URL = 'https://gate.lava.top/api/v2'
 LAVA_API_KEY = 'bKoAyqhc4J9IciJ81NmDUibgk99nDH6aUYw4pAQsvgBU2W1BMVD4aclpMOA5Onn8'
 
-# Используем DefaultBotProperties для настройки parse_mode
 bot = Bot(
     token=API_TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML)  # Указываем parse_mode здесь
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)  
 )
 dp = Dispatcher()
 router = Router()
 dp.include_router(router)
-# Инициализация FastAPI
 app = FastAPI()
 
 class FormEmail(StatesGroup):
     email = State()
 
-# Команда /start
 @router.message(Command("start"))
 async def send_welcome(message: Message):
     await message.answer(
@@ -109,17 +104,14 @@ async def webhook(request: Request):
 
     return {"status": "ok"}
 
-# Запуск бота
 async def start_bot():
     await dp.start_polling(bot)
 
-# Запуск FastAPI
 async def start_fastapi():
     config = uvicorn.Config(app, host="0.0.0.0", port=8000)
     server = uvicorn.Server(config)
     await server.serve()
 
-# Основная функция для запуска обоих приложений
 async def main():
     await asyncio.gather(
         start_bot(),
